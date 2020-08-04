@@ -43,7 +43,24 @@ class ViewController: UIViewController {
         super.viewDidLoad()
         // Do any additional setup after loading the view.
         
-        print("Hello World")
+        let testString = "hello world! :)"
+        var resultString = ""
+        
+        for myChar in testString {
+            
+            let myString = String(myChar.asciiValue!)
+            
+            let myInt = Int(myString)!
+            
+            print(myInt)
+            
+            let st = String(format:"%2X", myInt as CVarArg)
+            resultString += st
+            
+        }
+        
+        print("this is your result")
+        print(resultString)
         
     }
 
