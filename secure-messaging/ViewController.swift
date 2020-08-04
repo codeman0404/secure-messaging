@@ -59,7 +59,7 @@ class ViewController: UIViewController {
             
         }
         
-        print("this is your result")
+        print("this is your result from: 'hello world'")
         print(resultString)
         
     }
