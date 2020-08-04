@@ -9,6 +9,12 @@
 import UIKit
 
 class ViewController: UIViewController {
+    
+
+    override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
+        view.endEditing(true)
+        super.touchesBegan(touches, with: event)
+    }
 
     @IBAction func pullFromVault(_ sender: Any) {
     }
@@ -31,19 +37,18 @@ class ViewController: UIViewController {
     
     func encrypt (stringToEncrypt:String)->String {
         
-        return "Hello Bob"
+        let result = convertToHex(stringToEncrypt: stringToEncrypt)
+        
+        
+        
+        
+        return result
         
     }
     
-    
-    @IBOutlet weak var displayMessages: UILabel!
-    
-    
-    override func viewDidLoad() {
-        super.viewDidLoad()
-        // Do any additional setup after loading the view.
+    func convertToHex (stringToEncrypt:String)-> String {
         
-        let testString = "hello world! :)"
+        let testString = stringToEncrypt
         var resultString = ""
         
         for myChar in testString {
@@ -52,15 +57,21 @@ class ViewController: UIViewController {
             
             let myInt = Int(myString)!
             
-            print(myInt)
-            
             let st = String(format:"%2X", myInt as CVarArg)
             resultString += st
             
         }
         
-        print("this is your result from: 'hello world'")
-        print(resultString)
+        return resultString
+        
+    }
+    
+    @IBOutlet weak var displayMessages: UILabel!
+    
+    
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        // Do any additional setup after loading the view.
         
     }
 
