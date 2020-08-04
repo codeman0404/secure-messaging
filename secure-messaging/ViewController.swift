@@ -95,7 +95,9 @@ class ViewController: UIViewController {
                 }
             case 1:
                 if (strategy == "strat1"){
-                     print(2)
+                     let command = swapOne(resultLength: resultLength, inputString: result)
+                     changeStrings.append(command[0])
+                     result = (command[1])
                 } else {
                     print(1)
                 }
@@ -166,6 +168,44 @@ class ViewController: UIViewController {
         let index1 = arc4random_uniform(10)
         let index2 = arc4random_uniform(10)
         let returnString = String(index1) + "?" + String(index2)
+
+        
+        let index1Char = inputString[Int(index1)]
+        let index2Char = inputString[Int(index2)]
+        
+        mutableInputString = replace(myString: mutableInputString, Int(index1), Character(index2Char))
+        mutableInputString = replace(myString: mutableInputString, Int(index2), Character(index1Char))
+        
+        returnVar.append(returnString)
+        returnVar.append(mutableInputString)
+    
+        
+        return returnVar
+    }
+    
+    func swapTwo (resultLength: Int, inputString:String) -> [String] {
+        
+        var mutableInputString = inputString
+        
+        var returnVar = [String]()
+        
+        let index1 = arc4random_uniform(100)
+        let index2 = arc4random_uniform(100)
+        var index1String = String(index1)
+        var index2String = String(index2)
+        
+        if (index1 < 10){
+            
+            index1String = "/" + String(index1)
+        }
+    
+        
+        if (index2 < 10){
+            
+            index2String = "/" + String(index2)
+        }
+            
+        let returnString = index1String + "??" + index2String
 
         
         let index1Char = inputString[Int(index1)]
