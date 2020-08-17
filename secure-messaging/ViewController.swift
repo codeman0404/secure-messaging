@@ -56,7 +56,7 @@ class ViewController: UIViewController {
         if let text = messageField.text {
             
             let returnText = encrypt(stringToEncrypt:text)
-            print(returnText)
+            print("after the swaps: " + returnText)
             
         } else {
             print("please enter a valid message")
@@ -70,7 +70,9 @@ class ViewController: UIViewController {
         
         var result = convertToHex(stringToEncrypt: stringToEncrypt)
         
-        let resultLength = result.count
+        print("before all the swaps :" + result)
+        
+        var resultLength = result.count
         
         let numOps = (resultLength)/5
     
@@ -87,6 +89,7 @@ class ViewController: UIViewController {
                 
             case 0:
                 if (strategy == "strat1"){
+                    print("swap1")
                     let command = swapOne(resultLength: resultLength, inputString: result)
                     changeStrings.append(command[0])
                     result = (command[1])
@@ -95,53 +98,81 @@ class ViewController: UIViewController {
                 }
             case 1:
                 if (strategy == "strat1"){
-                     let command = swapOne(resultLength: resultLength, inputString: result)
-                     changeStrings.append(command[0])
-                     result = (command[1])
+                    if (resultLength > 9){
+                        print("swapTwo")
+                        let command = swapTwo(resultLength: resultLength, inputString: result)
+                        changeStrings.append(command[0])
+                        result = (command[1])
+                    
+                    } else {
+                        print("swapOne")
+                        let command = swapOne(resultLength: resultLength, inputString: result)
+                        changeStrings.append(command[0])
+                        result = (command[1])
+                    }
                 } else {
                     print(1)
                 }
                 
             case 2:
                 if (strategy == "strat1"){
-                     print(2)
+                     if (resultLength > 99){
+                          print("swap3")
+                          let command = swapThree(resultLength: resultLength, inputString: result)
+                          changeStrings.append(command[0])
+                          result = (command[1])
+                     
+                     } else if (resultLength > 9) {
+                        print("swap2")
+                         let command = swapTwo(resultLength: resultLength, inputString: result)
+                         changeStrings.append(command[0])
+                         result = (command[1])
+                     } else {
+                        print("swap1")
+                        let command = swapOne(resultLength: resultLength, inputString: result)
+                        changeStrings.append(command[0])
+                        result = (command[1])
+                    }
                 } else {
                     print(1)
                 }
                 
             case 3:
                 if (strategy == "strat1"){
-                     print(2)
+                    print("add Text :)")
+                    let command = addText(resultLength: resultLength, inputString: result)
+                    changeStrings.append(command[0])
+                    result = (command[1])
                 } else {
                     print(1)
                 }
             case 4:
                 if (strategy == "strat1"){
-                     print(2)
+                     print("case 4")
                 } else {
                     print(1)
                 }
             case 5:
                 if (strategy == "strat1"){
-                     print(2)
+                     print("case 5")
                 } else {
                     print(1)
                 }
             case 6:
                 if (strategy == "strat1"){
-                     print(2)
+                     print("case 6")
                 } else {
                     print(1)
                 }
             case 7:
                 if (strategy == "strat1"){
-                     print(2)
+                     print("case 7")
                 } else {
                     print(1)
                 }
             default:
                 if (strategy == "strat1"){
-                     print(2)
+                     print("case 8")
                 } else {
                     print(1)
                 }
@@ -152,8 +183,9 @@ class ViewController: UIViewController {
             x += 1
         }
         
-        
-        
+        resultLength = result.count
+        print("changeStrings: ")
+        print(changeStrings)
         return result
         
     }
@@ -163,11 +195,20 @@ class ViewController: UIViewController {
         
         var mutableInputString = inputString
         
-        var returnVar = [String]()
+        var index1: Int
+        var index2: Int
+        var returnString: String
         
-        let index1 = arc4random_uniform(10)
-        let index2 = arc4random_uniform(10)
-        let returnString = String(index1) + "?" + String(index2)
+        var returnVar = [String]()
+        if (resultLength > 9){
+            index1 = Int(arc4random_uniform(UInt32(10)))
+            index2 = Int(arc4random_uniform(UInt32(10)))
+            returnString = String(index1) + "?" + String(index2)
+        } else {
+            index1 = Int(arc4random_uniform(UInt32(resultLength)))
+            index2 = Int(arc4random_uniform(UInt32(resultLength)))
+            returnString = String(index1) + "?" + String(index2)
+        }
 
         
         let index1Char = inputString[Int(index1)]
@@ -187,12 +228,23 @@ class ViewController: UIViewController {
         
         var mutableInputString = inputString
         
-        var returnVar = [String]()
+        var index1: Int
+        var index2: Int
+        var index1String: String
+        var index2String: String
         
-        let index1 = arc4random_uniform(100)
-        let index2 = arc4random_uniform(100)
-        var index1String = String(index1)
-        var index2String = String(index2)
+        var returnVar = [String]()
+        if (resultLength > 99){
+            index1 = Int(arc4random_uniform(UInt32(99)))
+            index2 = Int(arc4random_uniform(UInt32(99)))
+            index1String = String(index1)
+            index2String = String(index2)
+        } else {
+            index1 = Int(arc4random_uniform(UInt32(resultLength)))
+            index2 = Int(arc4random_uniform(UInt32(resultLength)))
+            index1String = String(index1)
+            index2String = String(index2)
+        }
         
         if (index1 < 10){
             
@@ -221,12 +273,125 @@ class ViewController: UIViewController {
         return returnVar
     }
     
+    func swapThree (resultLength: Int, inputString:String) -> [String] {
+        
+        var mutableInputString = inputString
+        
+        var returnVar = [String]()
+        
+        var index1: Int
+        var index2: Int
+        var index1String: String
+        var index2String: String
+        
+        if (resultLength > 999){
+            index1 = Int(arc4random_uniform(UInt32(1000)))
+            index2 = Int(arc4random_uniform(UInt32(1000)))
+            index1String = String(index1)
+            index2String = String(index2)
+        } else {
+            index1 = Int(arc4random_uniform(UInt32(resultLength)))
+            index2 = Int(arc4random_uniform(UInt32(resultLength)))
+            index1String = String(index1)
+            index2String = String(index2)
+        }
+        
+        if (index1 < 10){
+            
+            index1String = "//" + String(index1)
+        } else if (index1 < 100){
+            
+            index1String = "/" + String(index1)
+        }
+    
+        
+        if (index2 < 10){
+            
+            index2String = "//" + String(index2)
+            
+        } else if (index2 < 100){
+            
+            index2String = "/" + String(index2)
+            
+        }
+            
+        let returnString = index1String + "=" + index2String
+
+        
+        let index1Char = inputString[Int(index1)]
+        let index2Char = inputString[Int(index2)]
+        
+        mutableInputString = replace(myString: mutableInputString, Int(index1), Character(index2Char))
+        mutableInputString = replace(myString: mutableInputString, Int(index2), Character(index1Char))
+        
+        returnVar.append(returnString)
+        returnVar.append(mutableInputString)
+    
+        
+        return returnVar
+    }
+    
+    func addText(resultLength: Int, inputString:String) -> [String] {
+        
+        var result = [String]()
+        
+        let lengthOfString = Int(arc4random_uniform(10))
+        
+        let elementArray = ["0","1","2","3","4","5","6","7","8","9","A","B","C","C","D","E","F"]
+        
+        var resultString = ""
+        var x = -1
+        
+        while (x < lengthOfString){
+            
+            resultString = resultString + elementArray.randomElement()!
+            x = x + 1
+        }
+        
+        let indexToInsert = String(Int(arc4random_uniform(UInt32(resultLength))))
+        
+        let command = "^'" + resultString + "'" + indexToInsert + "^"
+        
+        result.append(command)
+        
+        
+        let changedString = insertAt(inputString: inputString, stringToAdd: resultString, index: Int(indexToInsert)!)
+        
+        result.append(changedString)
+        
+        return result
+        
+    }
+    
+    func removeText (inputString: String, index: Int, textToRemove:String) -> String{
+        return ""
+    }
+    
     
     func replace(myString: String, _ index: Int, _ newChar: Character) -> String {
         var chars = Array(myString)     // gets an array of characters
         chars[index] = newChar
         let modifiedString = String(chars)
         return modifiedString
+    }
+    
+    func insertAt (inputString: String, stringToAdd: String, index: Int) -> String {
+        
+        var result = ""
+        var counter = 0
+        
+        for char in inputString {
+            
+            if counter != index{
+                result = result + String(char)
+            } else {
+                result = result + stringToAdd
+            }
+            
+            counter = counter + 1
+        }
+        
+        return result
     }
     
     func convertToHex (stringToEncrypt:String)-> String {
