@@ -89,7 +89,7 @@ class ViewController: UIViewController {
                 
             case 0:
                 if (strategy == "strat1"){
-                    print("swap1")
+                    
                     let command = swapOne(resultLength: resultLength, inputString: result)
                     changeStrings.append(command[0])
                     result = (command[1])
@@ -99,13 +99,13 @@ class ViewController: UIViewController {
             case 1:
                 if (strategy == "strat1"){
                     if (resultLength > 9){
-                        print("swapTwo")
+                        
                         let command = swapTwo(resultLength: resultLength, inputString: result)
                         changeStrings.append(command[0])
                         result = (command[1])
                     
                     } else {
-                        print("swapOne")
+                        
                         let command = swapOne(resultLength: resultLength, inputString: result)
                         changeStrings.append(command[0])
                         result = (command[1])
@@ -117,18 +117,18 @@ class ViewController: UIViewController {
             case 2:
                 if (strategy == "strat1"){
                      if (resultLength > 99){
-                          print("swap3")
+                          
                           let command = swapThree(resultLength: resultLength, inputString: result)
                           changeStrings.append(command[0])
                           result = (command[1])
                      
                      } else if (resultLength > 9) {
-                        print("swap2")
+                        
                          let command = swapTwo(resultLength: resultLength, inputString: result)
                          changeStrings.append(command[0])
                          result = (command[1])
                      } else {
-                        print("swap1")
+                        
                         let command = swapOne(resultLength: resultLength, inputString: result)
                         changeStrings.append(command[0])
                         result = (command[1])
@@ -139,7 +139,7 @@ class ViewController: UIViewController {
                 
             case 3:
                 if (strategy == "strat1"){
-                    print("add Text :)")
+                    
                     let command = addText(resultLength: resultLength, inputString: result)
                     changeStrings.append(command[0])
                     result = (command[1])
@@ -148,25 +148,12 @@ class ViewController: UIViewController {
                 }
             case 4:
                 if (strategy == "strat1"){
-                     print("case 4")
-                } else {
-                    print(1)
-                }
-            case 5:
-                if (strategy == "strat1"){
-                     print("case 5")
-                } else {
-                    print(1)
-                }
-            case 6:
-                if (strategy == "strat1"){
-                     print("case 6")
-                } else {
-                    print(1)
-                }
-            case 7:
-                if (strategy == "strat1"){
-                     print("case 7")
+                     
+                     // note that very short strings will not work properly when being encrypted
+                     // you can work out this bug later if you have time :)
+                     let command = removeText(inputString: result, index: Int(arc4random_uniform(UInt32(resultLength - 2))))
+                     changeStrings.append(command[0])
+                     result = (command[1])
                 } else {
                     print(1)
                 }
@@ -181,13 +168,50 @@ class ViewController: UIViewController {
             
             
             x += 1
+            resultLength = result.count
         }
         
-        resultLength = result.count
         print("changeStrings: ")
         print(changeStrings)
+        print()
+        
+        result = insertChangeStrings(changeStrings: changeStrings, inputString: result)
+        
         return result
         
+    }
+    
+    func insertChangeStrings (changeStrings: [String], inputString: String) -> String {
+        
+        var changeStringCounter = 0
+        var indexCounter = 0
+        var returnString = inputString
+        
+        while ((indexCounter < returnString.count) && (changeStringCounter < changeStrings.count)){
+            
+            let randomNum = arc4random_uniform(8)
+            
+            if ((randomNum == 3) || (randomNum == 7)){
+                
+                returnString = insertAt(inputString: returnString, stringToAdd: changeStrings[changeStringCounter], index: indexCounter)
+                indexCounter = indexCounter + (changeStrings[changeStringCounter]).count
+                changeStringCounter = changeStringCounter + 1
+            }
+            
+            indexCounter = indexCounter + 1
+        }
+        
+        if (changeStringCounter < changeStrings.count) {
+            
+            while (changeStringCounter < changeStrings.count){
+                returnString = insertAt(inputString: inputString, stringToAdd: changeStrings[changeStringCounter], index: (returnString.count - 1))
+                
+                changeStringCounter = changeStringCounter + 1
+            }
+        }
+        
+        
+        return returnString
     }
     
     
@@ -363,8 +387,48 @@ class ViewController: UIViewController {
         
     }
     
-    func removeText (inputString: String, index: Int, textToRemove:String) -> String{
-        return ""
+    func removeText (inputString: String, index: Int) -> [String] {
+        
+        var resultString = ""
+        var stringRemoved = ""
+        var x = 0
+        
+        let maxVal = (inputString.count) - (index + 1)
+        
+        var removedLength: Int
+        
+        if (maxVal > 14){
+            removedLength = Int(arc4random_uniform(UInt32(15)))
+            
+        } else {
+            
+            removedLength = Int(arc4random_uniform(UInt32(maxVal)))
+        }
+        
+        for char in inputString{
+            
+            if !((x >= index) && (x <= (index + removedLength))){
+                
+                resultString = resultString + String(char)
+                
+            } else {
+                
+                stringRemoved = stringRemoved + String(char)
+            }
+            
+            x = x + 1
+        }
+        
+        
+        var returnVar = [String]()
+        
+        let command = "^(" + stringRemoved + ")" + String(index) + "^"
+        
+        returnVar.append(command)
+        returnVar.append(resultString)
+        
+        
+        return returnVar
     }
     
     
@@ -385,6 +449,7 @@ class ViewController: UIViewController {
             if counter != index{
                 result = result + String(char)
             } else {
+                result = result + String(char)
                 result = result + stringToAdd
             }
             
