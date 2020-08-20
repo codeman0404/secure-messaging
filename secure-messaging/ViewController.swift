@@ -58,10 +58,188 @@ class ViewController: UIViewController {
             let returnText = encrypt(stringToEncrypt:text)
             print("after the swaps: " + returnText)
             
+            // TEST CODE, THIS SHOULD BE REMOVED
+            print("now the message will be unencrypted")
+            let unencryptedText = unencrypt(stringToUnencrypt: returnText)
+            
         } else {
             print("please enter a valid message")
         }
         
+    }
+    
+    func unencrypt(stringToUnencrypt:String) -> String {
+        
+        var changeStrings = [String]()
+        var badIndexList = [Int]()
+        
+        var x = 0
+        
+        let length = stringToUnencrypt.count
+        
+        // extract all of the encryption commands
+        while (x < length){
+            
+            if (stringToUnencrypt[x] == "?"){
+                
+                if (stringToUnencrypt[x+1] == "?"){
+                    
+                    
+                    
+                    let command = createSubstring(startIndex:(x-2), endIndex:(x+3), inputString:stringToUnencrypt)
+                    
+                    let type = "??"
+                    changeStrings.append(type)
+                    changeStrings.append(command)
+                    
+                    badIndexList.append(x-2)
+                    badIndexList.append(x-1)
+                    badIndexList.append(x)
+                    badIndexList.append(x+1)
+                    badIndexList.append(x+2)
+                    badIndexList.append(x+3)
+
+
+                    
+                    x = x + 3
+                    
+                } else {
+                    
+                    let type = "?"
+                    let command = createSubstring(startIndex:(x-1), endIndex:(x+1), inputString:stringToUnencrypt)
+                    
+                    changeStrings.append(type)
+                    changeStrings.append(command)
+                    
+                    badIndexList.append(x-1)
+                    badIndexList.append(x)
+                    badIndexList.append(x+1)
+                    
+                    x = x + 1
+                    
+                }
+                
+            } else if (stringToUnencrypt[x] == "="){
+                
+                let command = createSubstring(startIndex:(x-3), endIndex:(x+3), inputString:stringToUnencrypt)
+                let type = "="
+                
+                changeStrings.append(type)
+                changeStrings.append(command)
+                
+                badIndexList.append(x-3)
+                badIndexList.append(x-2)
+                badIndexList.append(x-1)
+                badIndexList.append(x)
+                badIndexList.append(x+1)
+                badIndexList.append(x+2)
+                badIndexList.append(x+3)
+                
+                x = x + 3
+                
+            } else if (stringToUnencrypt[x] == "^"){
+                
+                if (stringToUnencrypt[x+1] == "("){
+                    
+                    badIndexList.append(x)
+                    var tempX = (x + 1)
+                    
+                    while (stringToUnencrypt[tempX] != "^"){
+                        
+                        badIndexList.append(tempX)
+                        
+                        tempX = tempX + 1
+                        
+                    }
+                    
+                    let command = createSubstring(startIndex: x, endIndex: tempX, inputString: stringToUnencrypt)
+                    let type = "()"
+                    
+                    changeStrings.append(type)
+                    changeStrings.append(command)
+                    
+                    x = x + tempX
+                    
+                } else {
+                    
+                    badIndexList.append(x)
+                    var tempX = (x + 1)
+                    
+                    while (stringToUnencrypt[tempX] != "^"){
+                        
+                        badIndexList.append(tempX)
+                        
+                        tempX = tempX + 1
+                        
+                    }
+                    
+                    let command = createSubstring(startIndex: x, endIndex: tempX, inputString: stringToUnencrypt)
+                    let type = "''"
+                    
+                    changeStrings.append(type)
+                    changeStrings.append(command)
+                    
+                    x = x + tempX
+                    
+                }
+                
+            }
+            
+            x = x + 1
+        }
+        
+        // build a new string without the commands
+        var i = 0
+        var cleanedString = ""
+        for char in stringToUnencrypt {
+            
+            if (notIn(currentIndex: i, listOfBadIndices: badIndexList)){
+                
+                cleanedString = cleanedString + String(char)
+                
+            }
+            
+            i = i + 1
+            
+            
+        }
+        
+        
+        print()
+        print("this should now be an encrypted message with the commands seperated back out :)!")
+        print("commands: ")
+        print(changeStrings)
+        print("text: " + cleanedString)
+        
+        
+        return ""
+    }
+    
+    func notIn(currentIndex: Int, listOfBadIndices: [Int]) -> Bool {
+        
+        for index in listOfBadIndices {
+            
+            if (index == currentIndex) {
+                return false
+            }
+            
+        }
+        
+        
+        return true
+    }
+    
+    func createSubstring(startIndex:Int, endIndex:Int, inputString: String) -> String {
+        
+        var substring = ""
+        var counter = startIndex
+        while (counter <= endIndex){
+            
+            substring = substring + inputString[counter]
+            counter = counter + 1
+        }
+        
+        return substring
     }
     
     func encrypt (stringToEncrypt:String)->String {
