@@ -152,13 +152,15 @@ class ViewController: UIViewController {
                         
                     }
                     
+                    badIndexList.append(tempX)
+                    
                     let command = createSubstring(startIndex: x, endIndex: tempX, inputString: stringToUnencrypt)
                     let type = "()"
                     
                     changeStrings.append(type)
                     changeStrings.append(command)
                     
-                    x = x + tempX
+                    x = tempX
                     
                 } else {
                     
@@ -173,13 +175,15 @@ class ViewController: UIViewController {
                         
                     }
                     
+                    badIndexList.append(tempX)
+                    
                     let command = createSubstring(startIndex: x, endIndex: tempX, inputString: stringToUnencrypt)
                     let type = "''"
                     
                     changeStrings.append(type)
                     changeStrings.append(command)
                     
-                    x = x + tempX
+                    x = tempX
                     
                 }
                 
@@ -204,15 +208,179 @@ class ViewController: UIViewController {
             
         }
         
-        
         print()
-        print("this should now be an encrypted message with the commands seperated back out :)!")
         print("commands: ")
         print(changeStrings)
+        print("this is the cleaned string without being flipped back :)")
+        print(cleanedString)
+        
+        
+        // Perform all the operations to unscramble the strings
+        var commandCounter = 0
+        var typeCounter = 1
+        changeStrings = changeStrings.reversed()
+        
+        while typeCounter < changeStrings.count {
+            
+            if (changeStrings[typeCounter] == "''") {
+                
+                let command = changeStrings[commandCounter]
+                
+                var indexCounter = 2
+                var text = ""
+                var index = ""
+                
+                while (command[indexCounter] != "'"){
+                    
+                    text = text + command[indexCounter]
+                    indexCounter = indexCounter + 1
+                }
+                
+                indexCounter = indexCounter + 1
+                
+                while (command[indexCounter] != "^"){
+                    
+                    index = index + command[indexCounter]
+                    indexCounter = indexCounter + 1
+                }
+                
+                let intIndex = Int(index)!
+                let length = text.count
+                
+                cleanedString = removeAt(inputString: cleanedString, index: intIndex, length: length)
+                
+                
+                
+                
+                
+            } else if (changeStrings[typeCounter] == "()"){
+                
+                let command = changeStrings[commandCounter]
+                
+                var indexCounter = 2
+                var text = ""
+                var index = ""
+                
+                while (command[indexCounter] != ")"){
+                    
+                    text = text + command[indexCounter]
+                    indexCounter = indexCounter + 1
+                }
+                
+                indexCounter = indexCounter + 1
+                
+                while (command[indexCounter] != "^"){
+                    
+                    index = index + command[indexCounter]
+                    indexCounter = indexCounter + 1
+                }
+            
+                let intIndex = Int(index)!
+                
+                // subtract intIndex by 1 to compensate for how insertAt works
+                cleanedString = insertAt(inputString: cleanedString, stringToAdd: text, index: (intIndex - 1))
+                
+            } else if (changeStrings[typeCounter] == "?"){
+                
+                let command = changeStrings[commandCounter]
+                
+                let index1 = Int(command[0])!
+                let index2 = Int(command[2])!
+               
+                let index1Char = cleanedString[index1]
+                let index2Char = cleanedString[index2]
+                
+                cleanedString = replace(myString: cleanedString, Int(index1), Character(index2Char))
+                cleanedString = replace(myString: cleanedString, Int(index2), Character(index1Char))
+                
+                
+            } else if (changeStrings[typeCounter] == "??"){
+                
+                let command = changeStrings[commandCounter]
+                
+                var index1 = command[0] + command[1]
+                var index2 = command[4] + command[5]
+                
+                if (index1[0] == "/"){
+                    
+                    index1 = index1[1]
+                    
+                }
+                
+                if (index2[0] == "/"){
+                    
+                    index2 = index2[1]
+                    
+                }
+                
+                let intIndex1 = Int(index1)!
+                let intIndex2 = Int(index2)!
+                
+                let char1 = cleanedString[intIndex1]
+                let char2 = cleanedString[intIndex2]
+                
+                cleanedString = replace(myString: cleanedString, intIndex1, Character(char1))
+                cleanedString = replace(myString: cleanedString, intIndex2, Character(char2))
+                
+            } else if (changeStrings[typeCounter] == "="){
+                
+                let command = changeStrings[commandCounter]
+                
+                var index1 = command[0] + command[1] + command[2]
+                var index2 = command[4] + command[5] + command[6]
+                
+                if (index1[0] == "/"){
+                    
+                    if (index1[1] == "/"){
+                        
+                        index1 = index1[2]
+                        
+                        
+                    } else {
+                        
+                        index1 = index1[1] + index1[2]
+                        
+                    }
+                    
+                }
+                
+                if (index2[0] == "/"){
+                    
+                    if (index2[1] == "/"){
+                        
+                        index2 = index2[2]
+                        
+                        
+                    } else {
+                        
+                        index2 = index2[1] + index2[2]
+                        
+                    }
+                    
+                }
+                
+                let intIndex1 = Int(index1)!
+                let intIndex2 = Int(index2)!
+                
+                let char1 = cleanedString[intIndex1]
+                let char2 = cleanedString[intIndex2]
+                
+                cleanedString = replace(myString: cleanedString, intIndex1, Character(char1))
+                cleanedString = replace(myString: cleanedString, intIndex2, Character(char2))
+                
+            }
+            
+            typeCounter = typeCounter + 2
+            commandCounter = commandCounter + 2
+        }
+        
+        
+        print()
+        print("this should now be the hex string in the correct order")
         print("text: " + cleanedString)
         
         
-        return ""
+        return cleanedString
     }
     
     func notIn(currentIndex: Int, listOfBadIndices: [Int]) -> Bool {
@@ -636,6 +804,28 @@ class ViewController: UIViewController {
         
         return result
     }
+    
+    func removeAt (inputString: String, index: Int, length: Int) -> String {
+        
+        var returnString = ""
+        var x = 0
+        for char in inputString {
+            
+            // this may need to be shifted forward by 1
+            if !((x > index) && (x <= (index + length))){
+                
+                returnString = returnString + String(char)
+                
+            }
+            
+            x = x + 1
+            
+        }
+        
+        return returnString
+        
+    }
+    
     
     func convertToHex (stringToEncrypt:String)-> String {
         
