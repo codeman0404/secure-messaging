@@ -55,12 +55,18 @@ class ViewController: UIViewController {
         
         if let text = messageField.text {
             
+            print("original message")
+            print(text)
+            print()
+            
             let returnText = encrypt(stringToEncrypt:text)
             print("after the swaps: " + returnText)
             
             // TEST CODE, THIS SHOULD BE REMOVED
             print("now the message will be unencrypted")
             let unencryptedText = unencrypt(stringToUnencrypt: returnText)
+            print("your final text :)")
+            print(unencryptedText)
             
         } else {
             print("please enter a valid message")
@@ -319,8 +325,8 @@ class ViewController: UIViewController {
                 let char1 = cleanedString[intIndex1]
                 let char2 = cleanedString[intIndex2]
                 
-                cleanedString = replace(myString: cleanedString, intIndex1, Character(char1))
-                cleanedString = replace(myString: cleanedString, intIndex2, Character(char2))
+                cleanedString = replace(myString: cleanedString, intIndex2, Character(char1))
+                cleanedString = replace(myString: cleanedString, intIndex1, Character(char2))
                 
             } else if (changeStrings[typeCounter] == "="){
                 
@@ -365,8 +371,8 @@ class ViewController: UIViewController {
                 let char1 = cleanedString[intIndex1]
                 let char2 = cleanedString[intIndex2]
                 
-                cleanedString = replace(myString: cleanedString, intIndex1, Character(char1))
-                cleanedString = replace(myString: cleanedString, intIndex2, Character(char2))
+                cleanedString = replace(myString: cleanedString, intIndex2, Character(char1))
+                cleanedString = replace(myString: cleanedString, intIndex1, Character(char2))
                 
             }
             
@@ -379,8 +385,28 @@ class ViewController: UIViewController {
         print("this should now be the hex string in the correct order")
         print("text: " + cleanedString)
         
+        print()
+        print()
         
-        return cleanedString
+        // last step! turn int back into text :)
+        
+        var readableText = ""
+        
+        var hexCounter = 0
+        let cleanedStringLength = cleanedString.count
+        
+        while (hexCounter < (cleanedStringLength - 1)){
+            
+            let tempVar = cleanedString[hexCounter] + cleanedString[hexCounter + 1]
+            let tempVarInt = Int(tempVar, radix: 16)!
+            let s = String(UnicodeScalar(UInt8(tempVarInt)))
+            
+            readableText = readableText + s
+            
+            hexCounter = hexCounter + 2
+        }
+        
+        return readableText
     }
     
     func notIn(currentIndex: Int, listOfBadIndices: [Int]) -> Bool {
